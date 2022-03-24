@@ -31,13 +31,17 @@ class MyJobService: JobService() {
                 delay(1000)
                 log("Timer $i")
             }
+            jobFinished(p0,true)
         }
-        jobFinished(p0,true)
         return true
     }
 
     override fun onStopJob(p0: JobParameters?): Boolean {
         log("onStopJob")
         return true
+    }
+
+    companion object {
+        const val JOB_ID = 111
     }
 }
