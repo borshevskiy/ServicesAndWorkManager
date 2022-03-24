@@ -8,6 +8,8 @@ import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.work.ExistingWorkPolicy
+import androidx.work.WorkManager
 import com.borshevskiy.servicesandworkmanager.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -49,11 +51,19 @@ class MainActivity : AppCompatActivity() {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     jobScheduler.enqueue(jobInfo, JobWorkItem(MyJobService.newIntent(page++)))
                 } else {
-                    startService(MySchedulerIntentService.newIntent(this@MainActivity,page++))
+                    startService(MySchedulerIntentService.newIntent(this@MainActivity, page++))
                 }
             }
             jobIntentService.setOnClickListener {
                 MyJobIntentService.enqueue(this@MainActivity, page++)
+            }
+            workManager.setOnClickListener {
+                val workManager = WorkManager.getInstance(applicationContext)
+                workManager.enqueueUniqueWork(
+                    MyWorker.WORK_NAME,
+                    ExistingWorkPolicy.APPEND,
+                    MyWorker.makeRequest(page++)
+                )
             }
         }
     }
