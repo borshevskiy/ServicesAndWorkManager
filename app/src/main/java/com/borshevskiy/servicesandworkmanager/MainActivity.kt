@@ -32,6 +32,12 @@ class MainActivity : AppCompatActivity() {
                     MyForegroundService.newIntent(this@MainActivity)
                 )
             }
+            intentService.setOnClickListener {
+                ContextCompat.startForegroundService(
+                    this@MainActivity,
+                    MyIntentService.newIntent(this@MainActivity)
+                )
+            }
             jobScheduler.setOnClickListener {
                 val componentName = ComponentName(this@MainActivity, MyJobService::class.java)
                 val jobInfo =
@@ -42,6 +48,8 @@ class MainActivity : AppCompatActivity() {
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     jobScheduler.enqueue(jobInfo, JobWorkItem(MyJobService.newIntent(page++)))
+                } else {
+                    startService(MySchedulerIntentService.newIntent(this@MainActivity,page++))
                 }
             }
         }
